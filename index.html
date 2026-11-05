@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10142d">
+<title>Neon Garden – Match & Glow</title>
+<style>
+:root{--bg:#10142d;--panel:#1a2042;--panel2:#252d59;--pink:#ff5ca8;--cyan:#54e7ef;--yellow:#ffe66d;--mint:#70f0b2;--text:#f7f7ff;--muted:#aeb8df;--tile:clamp(36px,9.7vw,64px)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#39417e 0,#171c3c 38%,#0d1128 78%);color:var(--text);font-family:Inter,ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center;padding:16px 12px 30px}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+.app{width:min(100%,760px)}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 2px 14px}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#ff5ca8,#8b67ff 55%,#42dbe8);font-size:26px;box-shadow:0 7px 25px #ff5ca844}
+h1{font-size:clamp(21px,5vw,30px);margin:0;letter-spacing:-1px}.tag{font-size:11px;color:var(--muted);letter-spacing:2px;font-weight:800}
+.topstats{display:flex;gap:8px}.pill{background:#22294e;border:1px solid #424d80;border-radius:14px;padding:8px 11px;text-align:center;min-width:66px}.pill small{display:block;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px}.pill b{font-size:17px}
+.hero{background:linear-gradient(110deg,#30265e,#27386b 55%,#1c5b72);border:1px solid #58659c;border-radius:23px;padding:16px 18px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 12px 35px #05091d66}
+.hero:after{content:"✦";position:absolute;right:20px;top:-16px;font-size:105px;color:#ffffff13;transform:rotate(18deg)}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:12px;position:relative;z-index:1}
+.level-label{font-size:11px;letter-spacing:1.8px;color:#b9c7ff;font-weight:900}.level-name{font-size:21px;font-weight:900;margin-top:2px}
+.goal{font-size:13px;color:#e5eaff;margin-top:4px}.goal strong{color:var(--yellow)}
+.progress-wrap{margin-top:13px;background:#11193688;height:9px;border-radius:20px;overflow:hidden;position:relative;z-index:1}.progress{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:20px;transition:width .25s}
+.board-shell{background:linear-gradient(145deg,#252d5b,#161d40);border:1px solid #49568d;border-radius:23px;padding:10px;box-shadow:0 16px 36px #05091d88;position:relative}
+.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;touch-action:manipulation;user-select:none}
+.tile{aspect-ratio:1;border-radius:13px;display:grid;place-items:center;font-size:clamp(20px,5.6vw,36px);background:linear-gradient(145deg,#3b477f,#27315e);box-shadow:inset 0 2px 2px #ffffff1a,inset 0 -4px 0 #111a3e66,0 2px 3px #080d25;transition:transform .12s,filter .12s;position:relative;min-width:0}
+.tile:before{content:"";position:absolute;inset:3px 5px auto;height:24%;border-radius:10px;background:#ffffff12}
+.tile.selected{outline:3px solid var(--yellow);transform:scale(.92);filter:brightness(1.3);z-index:2}
+.tile.hint{animation:hint .65s ease-in-out 2}
+.tile.empty{opacity:0;transform:scale(.5)}
+@keyframes hint{50%{transform:scale(.88);filter:brightness(1.6)}}
+.controls{display:flex;gap:9px;margin-top:12px}.action{flex:1;border-radius:15px;padding:12px 10px;font-weight:900;background:#303a70;border:1px solid #5966a0;box-shadow:0 4px 0 #111936;transition:transform .1s}.action:active{transform:translateY(3px);box-shadow:0 1px 0 #111936}.action.primary{background:linear-gradient(100deg,#ff5ca8,#9c69ff);border-color:#ff9ac9}.action:disabled{opacity:.45;cursor:not-allowed}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}.info{background:#1a2042;border:1px solid #333f70;border-radius:16px;padding:11px 13px}.info small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.2px;font-weight:900}.info b{font-size:18px}
+.character{display:flex;align-items:center;gap:11px;margin:14px 2px 0;color:#dce4ff;font-size:13px;line-height:1.35}.buddy{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#ffe66d,#ff9d6b);display:grid;place-items:center;font-size:27px;box-shadow:0 5px 15px #ffb65c44;flex:none}
+.overlay{position:fixed;inset:0;background:#090d20d9;display:none;place-items:center;padding:18px;z-index:10;backdrop-filter:blur(8px)}.overlay.show{display:grid}.modal{width:min(100%,390px);background:linear-gradient(150deg,#30396e,#1a2042);border:1px solid #6874ad;border-radius:25px;padding:25px;text-align:center;box-shadow:0 20px 70px #0009}.modal .big{font-size:56px}.modal h2{margin:5px 0 7px;font-size:27px}.modal p{color:#d0d8fa;margin:0 0 18px;line-height:1.5}.modal .action{width:100%;margin-top:8px}
+footer{text-align:center;color:#7e8ab8;font-size:10px;margin-top:17px}
+@media(min-width:600px){.board-shell{padding:14px}.board{gap:7px}.tile{border-radius:16px}.hero{padding:19px 22px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header>
+ <div class="brand"><div class="logo">🌈</div><div><div class="tag">MATCH & GLOW</div><h1>Neon Garden</h1></div></div>
+ <div class="topstats"><div class="pill"><small>⭐ Sterne</small><b id="stars">0</b></div><div class="pill"><small>🪙 Glow-Coins</small><b id="coins">0</b></div></div>
+</header>
+<section class="hero">
+ <div class="hero-top"><div><div class="level-label" id="levelLabel">LEVEL 1</div><div class="level-name" id="levelName">Der erste Funke</div><div class="goal" id="goalText">Sammle <strong>18</strong> Kristalle ✨</div></div><div style="font-size:43px;position:relative;z-index:1">🪴</div></div>
+ <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+</section>
+<section class="board-shell"><div class="board" id="board" aria-label="Spielfeld"></div></section>
+<div class="controls"><button class="action" id="shuffleBtn">🔀 Mischen</button><button class="action primary" id="hintBtn">💡 Tipp</button></div>
+<div class="bottom">
+ <div class="info"><small>VERBLEIBENDE ZÜGE</small><b id="moves">20</b></div>
+ <div class="info"><small>LEVEL-FORTSCHRITT</small><b id="targetCount">0 / 18</b></div>
+</div>
+<div class="character"><div class="buddy" id="buddy">🦊</div><div><b id="buddyName">Fips, der Garten-Guide</b><br><span id="message">Hey! Kombiniere drei gleiche Symbole und lass den Neon-Garten leuchten!</span></div></div>
+<footer>Dein Spielstand wird automatisch auf diesem Gerät gespeichert. ✦</footer>
+</main>
+<div class="overlay" id="overlay"><div class="modal"><div class="big" id="modalIcon">🎉</div><h2 id="modalTitle">Level geschafft!</h2><p id="modalText">Der Garten leuchtet heller!</p><button class="action primary" id="modalMain">Weiter</button><button class="action" id="modalAlt">Nochmal spielen</button></div></div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const symbols=["💎","🌸","⚡","🍀","🫧","⭐"];
+const names=["Kristalle","Blüten","Blitze","Kleeblätter","Seifenblasen","Sterne"];
+const levels=[
+ ["Der erste Funke",18,20,"🦊","Fips"],["Blütenparty",24,22,"🐼","Pippa"],["Blitzlicht-Garten",30,23,"🐸","Zapp"],["Sternenregen",36,24,"🐱","Mika"],["Das große Leuchten",44,25,"🦄","Nova"],
+ ["Kristallbucht",50,26,"🐙","Olli"],["Wolkenwiese",58,27,"🐻","Bobo"],["Neon-Nacht",66,28,"🦝","Rumi"],["Glitzer-Gipfel",74,29,"🐰","Lumi"],["Gartenfestival",85,30,"🐲","Pixel"]
+];
+let level=1,coins=0,stars=0,board=[],moves=20,collected=0,selected=-1,busy=false,goal=18;
+let save={};
+try{save=JSON.parse(localStorage.getItem("neonGardenSave")||"{}")}catch(e){}
+if(save&&Number.isInteger(save.level)){level=Math.max(1,save.level);coins=save.coins||0;stars=save.stars||0}
+const levelData=()=>levels[(level-1)%levels.length];
+function persist(){localStorage.setItem("neonGardenSave",JSON.stringify({level,coins,stars}))}
+function say(t){$("message").textContent=t}
+function initLevel(){let d=levelData();goal=d[1];moves=d[2];collected=0;selected=-1;board=Array(64).fill(0).map(()=>Math.floor(Math.random()*6));for(let i=0;i<64;i++){while((i%8>=2&&board[i]===board[i-1]&&board[i]===board[i-2])||(i>=16&&board[i]===board[i-8]&&board[i]===board[i-16]))board[i]=Math.floor(Math.random()*6)}update();render()}
+function update(){let d=levelData();$("stars").textContent=stars;$("coins").textContent=coins;$("levelLabel").textContent="LEVEL "+level;$("levelName").textContent=d[0];$("goalText").innerHTML=`Sammle <strong>${goal}</strong> Symbole ${symbols[(level-1)%6]}`;$("moves").textContent=moves;$("targetCount").textContent=`${collected} / ${goal}`;$("progress").style.width=Math.min(100,collected/goal*100)+"%";$("buddy").textContent=d[3];$("buddyName").textContent=d[4]+", dein Garten-Guide"}
+function render(){let el=$("board");el.innerHTML="";board.forEach((v,i)=>{let b=document.createElement("button");b.className="tile"+(selected===i?" selected":"");b.textContent=v<0?"":symbols[v];b.setAttribute("aria-label",v<0?"leer":names[v]);b.addEventListener("click",()=>tap(i));el.appendChild(b)})}
+function matches(){let set=new Set();for(let r=0;r<8;r++)for(let c=0;c<8;c++){let i=r*8+c,v=board[i];if(v<0)continue;if(c<6&&board[i+1]===v&&board[i+2]===v){let k=c;while(k<8&&board[r*8+k]===v)set.add(r*8+k++)}if(r<6&&board[i+8]===v&&board[i+16]===v){let k=r;while(k<8&&board[k*8+c]===v)set.add(k++*8+c)}}return [...set]}
+function tap(i){if(busy)return;if(selected<0){selected=i;render();return}if(selected===i){selected=-1;render();return}let a=selected,b=i;selected=-1;if(Math.abs(a-b)!==1&&Math.abs(a-b)!==8||Math.abs(a-b)===7||Math.abs(a-b)===9){selected=i;render();return}if(Math.abs(a-b)===1&&Math.floor(a/8)!==Math.floor(b/8)){selected=i;render();return}swap(a,b);let m=matches();if(!m.length){setTimeout(()=>{swap(a,b);render();say("Da war noch kein Match dabei – probier's nochmal!")},120);return}moves--;processMatches(m)}
+function swap(a,b){[board[a],board[b]]=[board[b],board[a]]}
+function processMatches(m){busy=true;let count=m.length;collected+=count;coins+=count*2; m.forEach(i=>board[i]=-1);update();render();setTimeout(()=>{for(let c=0;c<8;c++){let vals=[];for(let r=7;r>=0;r--){let v=board[r*8+c];if(v>=0)vals.push(v)}for(let r=7;r>=0;r--)board[r*8+c]=vals[7-r]??Math.floor(Math.random()*6)}let next=matches();render();if(next.length){setTimeout(()=>processMatches(next),160)}else{busy=false;update();if(collected>=goal){stars+=3;coins+=30;persist();showModal("🏆","Level geschafft!",`Stark! Du hast ${collected} Symbole gesammelt und 3 Sterne verdient.`,`Weiter`,"Weiter")}else if(moves<=0){persist();showModal("🌱","Fast geschafft!",`Du hast ${collected} von ${goal} Symbolen gesammelt. Versuch es noch einmal!`,"Nochmal","Nochmal spielen")}else{say(count>=5?"Mega-Kombo! Der Garten explodiert vor Glanz!":"Nice! Weiter so – du bist im Flow.");persist()}}},180)}
+function showModal(icon,title,txt,main,mode){$("modalIcon").textContent=icon;$("modalTitle").textContent=title;$("modalText").textContent=txt;$("modalMain").textContent=main;$("modalMain").onclick=()=>{hideModal();if(mode==="Weiter"){level++;persist();initLevel()}else initLevel()};$("modalAlt").textContent=mode==="Weiter"?"Level nochmal":"Nochmal spielen";$("modalAlt").onclick=()=>{hideModal();initLevel()};$("overlay").classList.add("show")}
+function hideModal(){$("overlay").classList.remove("show")}
+$("shuffleBtn").onclick=()=>{if(busy)return;for(let i=board.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));swap(i,j)}selected=-1;render();say("Frisch gemischt! Entdeck deine nächste Kombi.");}
+$("hintBtn").onclick=()=>{if(busy)return;let found=false;for(let i=0;i<64&&!found;i++){for(let j of [i+1,i+8]){if(j>=64||(j===i+1&&i%8===7))continue;swap(i,j);if(matches().length){selected=i;render();let tiles=$("board").children;tiles[i].classList.add("hint");tiles[j].classList.add("hint");setTimeout(()=>{tiles[i]?.classList.remove("hint");tiles[j]?.classList.remove("hint")},1300);found=true;break}swap(i,j)}}if(!found)say("Mische das Feld, dann findest du neue Möglichkeiten!");}
+initLevel();
+})();
+</script>
+</body></html>
